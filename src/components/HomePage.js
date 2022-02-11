@@ -5,7 +5,7 @@ const HomePage = () => {
     const [meetings, setMeetings] = useState([]);
 
     useEffect(() => {
-        fetch('https://localhost:44388/api/meetings')
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings`)
             .then(res => res.json())
             .then(result => {
                 setMeetings(result)

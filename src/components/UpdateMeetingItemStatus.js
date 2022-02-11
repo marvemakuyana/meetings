@@ -14,7 +14,7 @@ const UpdateMeetingItemStatus = () => {
 
     useEffect(() => {
 
-        fetch(`https://localhost:44388/api/meetings/${ItemId}`)
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings/${ItemId}`)
             .then(res => res.json())
             .then(result => {
                 setMeetingItemStatus(result)
@@ -37,7 +37,7 @@ const UpdateMeetingItemStatus = () => {
 
         };
 
-        fetch('https://localhost:44388/api/meetingItemStatus/' + meetingItemStatus.ItemStatusId, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingItemStatus/` + meetingItemStatus.ItemStatusId, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(statusInfo)

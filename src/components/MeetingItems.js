@@ -8,7 +8,7 @@ const MeetingItems = () => {
     const { MeetingTypeId } = useParams();
 
     useEffect(() => {
-        fetch(`https://localhost:44388/api/meetingItems/${MeetingTypeId}`)
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingItems/${MeetingTypeId}`)
             .then(res => res.json())
             .then(result => {
                 setItems(result)

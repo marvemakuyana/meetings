@@ -42,7 +42,7 @@ const Meetings = () => {
 
     })
     useEffect(() => {
-        fetch('https://localhost:44388/api/meetingTypes')
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingTypes`)
             .then(res => res.json())
             .then(result => {
                 setMeetingType(result)
@@ -51,7 +51,7 @@ const Meetings = () => {
     }, []);
 
     useEffect(() => {
-        fetch('https://localhost:44388/api/items')
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/items`)
             .then(res => res.json())
             .then(result => {
                 setItems(result)
@@ -70,7 +70,7 @@ const Meetings = () => {
         setMeetings({ ...meetings, [name]: value })
 
 
-        fetch(`https://localhost:44388/api/meetingItems/${value}`)
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingItems/${value}`)
             .then(res => res.json())
             .then(result => {
                 setItems(result)
@@ -95,7 +95,7 @@ const Meetings = () => {
         };
 
 
-        fetch('https://localhost:44388/api/meetings', {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings`, {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(meetingInfo)
