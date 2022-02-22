@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-const MeetingItems = () => {
+const ViewMeeting = () => {
 
     const meetings = JSON.parse(localStorage.getItem("meetings"));
     const meetingItems = JSON.parse(localStorage.getItem("meetingItems"));
+    const meetingItemStatus = JSON.parse(localStorage.getItem("meetingItemsStatus"));
     const [meetingType, settMeetingType] = useState('');
 
 
@@ -25,7 +26,8 @@ const MeetingItems = () => {
     return (
         <div>
             <div>
-                <h2>Meeting Details</h2>
+                <br /><hr />
+                <h3>Meeting Details</h3>
                 <p>
                     <strong> Meeting Type : </strong> {meetingType}
                 </p>
@@ -36,15 +38,18 @@ const MeetingItems = () => {
                     <strong> Meeting Time : </strong> {meetings.meetingTime}
                 </p>
             </div>
-            <hr />
+
             {meetingItems &&
                 <div>
-                    <h2>Meeting Items </h2>
+                    <h2>Carried forward Meeting Items </h2>
                     <p>
-                        <strong>Meeting Type : </strong> {meetingItems.ItemDescription}
+                        <strong>Item Description : </strong> {meetingItems.ItemDescription}
                     </p>
                     <p>
-                        <strong> Meeting Date :  </strong>{meetingItems.DueDate}
+                        <strong> Meeting Due Date :  </strong>{meetingItems.DueDate}
+                    </p>
+                    <p>
+                        <strong>Item Status: </strong> {meetingItemStatus.ItemStatusName}
                     </p>
                 </div>
             }
@@ -53,4 +58,4 @@ const MeetingItems = () => {
     );
 }
 
-export default MeetingItems;
+export default ViewMeeting;

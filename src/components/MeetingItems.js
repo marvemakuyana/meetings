@@ -5,6 +5,7 @@ const MeetingItems = () => {
 
 
     const [items, setItems] = useState([]);
+    const [meetingItemStatus, setMeetingItemStatus] = useState([]);
     const { MeetingTypeId } = useParams();
 
     useEffect(() => {
@@ -12,7 +13,15 @@ const MeetingItems = () => {
             .then(res => res.json())
             .then(result => {
                 setItems(result)
+
+                fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings/${result.ItemId}`)
+                    .then(res => res.json())
+                    .then(result => {
+                        setMeetingItemStatus(result)
+                        console.log(result)
+                    })
                 console.log(result)
+                console.log(result.ItemId)
             })
     }, [])
 
@@ -25,7 +34,9 @@ const MeetingItems = () => {
                 <p>Meeting Items:</p>
 
                 <div>
-                    <p><strong>Item description: </strong>{items.ItemDescription} <strong>Item Due Date:</strong> {items.DueDate}  <Link to={'/updateStatus/' + items.ItemId}> Update Meeting Item Status</Link></p>
+                    <p><strong>Item Description: </strong>{items.ItemDescription} </p>
+                    <p> <strong>Item Due Date: </strong> {items.DueDate} </p>
+                    <p> <strong>Item Status: </strong> {meetingItemStatus.ItemStatusName} <Link to={'/updateStatus/' + items.ItemId}> Update Meeting Item Status</Link></p>
 
                 </div>
 

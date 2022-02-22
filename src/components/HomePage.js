@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+import ViewMeeting from './ViewMeeting';
 
 const HomePage = () => {
     const [meetings, setMeetings] = useState([]);
+    const response = JSON.parse(localStorage.getItem("meetings"));
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings`)
@@ -13,18 +17,30 @@ const HomePage = () => {
             })
     }, []);
 
+    const handleSubmit = () => {
+
+        navigate('/create')
+        localStorage.clear();
+    }
+
 
     return (
         <div>
-            <h2>Meetings Data...</h2>
-            <Link to='/create'>Capture New Meeting</Link><hr /><br />
-            <table>
-                <thead>
+            <h3>Click the button below to Capture New Meeting....</h3>
+            <button onClick={handleSubmit}>Capture New Meeting</button>
+            {response &&
+                <div>
+                    <ViewMeeting />
+                </div>}
+            <hr /><br />
+            <h3 style={{ textAlign: 'center' }}> Update Meeting Item Status</h3>
+            <table className='table'>
+                <thead className='thead-light'>
                     <tr>
-                        <th style={{ width: '100px' }}>MeetingId</th>
-                        <th style={{ width: '100px' }}>MeetingTypeId</th>
-                        <th style={{ width: '300px' }}>Meetingdate</th>
-                        <th style={{ width: '300px' }}>MeetingTime</th>
+                        <th>MeetingId</th>
+                        <th>MeetingTypeId</th>
+                        <th>Meetingdate</th>
+                        <th>MeetingTime</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Meetings = () => {
     const initialState = {
-        meetingId: Math.floor(Math.random() * 1000) + 16,
         meetingTypeId: 0,
         meetingDate: new Date().toLocaleString(),
         meetingTime: new Date().toLocaleString(),
     }
     const [meetings, setMeetings] = useState(initialState);
+    const [meetingsData, setMeetingsData] = useState([]);
     const [meetingType, setMeetingType] = useState([]);
+    const [meetingItemStatus, setMeetingItemStatus] = useState([]);
     const [items, setItems] = useState([]);
     const [checked, setChecked] = useState(false);
     const navigate = useNavigate();
@@ -17,6 +18,15 @@ const Meetings = () => {
     useEffect(() => {
 
         const data = localStorage.getItem('meetingItems')
+
+        if (data) {
+            setItems(JSON.parse(data))
+        }
+
+    }, [])
+    useEffect(() => {
+
+        const data = localStorage.getItem('meetingItemsStatus')
 
         if (data) {
             setItems(JSON.parse(data))
@@ -41,20 +51,25 @@ const Meetings = () => {
         localStorage.setItem('meetings', JSON.stringify(meetings))
 
     })
+
+
+    useEffect(() => {
+
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings/`)
+            .then(res => res.json())
+            .then(result => {
+                setMeetingsData(result)
+
+            })
+
+
+    }, [])
+
     useEffect(() => {
         fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingTypes`)
             .then(res => res.json())
             .then(result => {
                 setMeetingType(result)
-                console.log(result)
-            })
-    }, []);
-
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/items`)
-            .then(res => res.json())
-            .then(result => {
-                setItems(result)
                 console.log(result)
             })
     }, []);
@@ -69,12 +84,17 @@ const Meetings = () => {
         const { name, value } = event.target
         setMeetings({ ...meetings, [name]: value })
 
-
         fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetingItems/${value}`)
             .then(res => res.json())
             .then(result => {
                 setItems(result)
-                console.log(result)
+                fetch(`${process.env.REACT_APP_BACKEND_URL}/api/meetings/${result.ItemId}`)
+                    .then(res => res.json())
+                    .then(result => {
+                        setMeetingItemStatus(result)
+                        console.log(result)
+                    })
+                console.log('items', result)
             })
 
     };
@@ -87,7 +107,7 @@ const Meetings = () => {
     const handleSubmit = () => {
 
         let meetingInfo = {
-            MeetingId: meetings.meetingId,
+            MeetingId: Math.max.apply(null, meetingsData.map(data => data.MeetingId + 1)),
             MeetingTypeId: meetings.meetingTypeId,
             MeetingDate: meetings.meetingDate,
             MeetingTime: meetings.meetingTime
@@ -105,9 +125,10 @@ const Meetings = () => {
                 if (checked === true) {
 
                     localStorage.setItem('meetingItems', JSON.stringify(items))
+                    localStorage.setItem('meetingItemsStatus', JSON.stringify(meetingItemStatus))
                 }
 
-                navigate('/viewmeeting')
+                navigate('/')
 
             }
         }).catch(err => {
@@ -118,7 +139,7 @@ const Meetings = () => {
 
     return (
         <div>
-            <h2>Create Meeting...</h2>
+            <h3>Create Meeting...</h3>
             <p>
                 <label>Meeting Type : <select name='meetingTypeId' value={meetings.meetingTypeId} onChange={handleInputChangeDropdown}>
                     <option value='0'>Select...</option>
@@ -137,10 +158,10 @@ const Meetings = () => {
             {meetings.meetingTypeId !== 0 &&
                 <div>
 
-                    <p>Meeting Items:</p>
+                    <p><strong>Meeting Items from the previous meeting:</strong></p>
 
                     <div>
-                        <p><input type='checkbox' value={checked} onChange={handleInputChangeCheckBox} name="checked" /> <strong>Item description: </strong>{items.ItemDescription} <strong>Item Due Date:</strong> {items.DueDate}</p>
+                        <p><input type='checkbox' value={checked} onChange={handleInputChangeCheckBox} name="checked" /> <strong>Item Description: </strong>{items.ItemDescription} <strong>Item Due Date:</strong> {items.DueDate} <strong>Item Status: </strong> {meetingItemStatus.ItemStatusName}</p>
 
                     </div>
 
